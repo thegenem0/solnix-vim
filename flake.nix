@@ -7,7 +7,7 @@
     nixpkgs.url = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, nixvim, flake-utils, ... }:
+  outputs = { nixpkgs, nixvim, flake-utils, ... }:
     let config = import ./config;
     in flake-utils.lib.eachDefaultSystem (system:
       let
@@ -35,20 +35,5 @@
         };
 
         devShells.default = import ./shell.nix { inherit pkgs; };
-      }) // {
-
-        nixosModules.default = { pkgs, ... } : {
-          programs.neovim = {
-            enable = true;
-            package = self.packages.${pkgs.stdenv.system}.default;
-          };
-        };
-
-        homeManagerModules.default = { pkgs, ... }: {
-          programs.neovim = {
-            enable = true;
-            package = self.packages.${pkgs.stdenv.system}.default;
-          };
-        };
-    };
+      });
 }
