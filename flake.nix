@@ -4,14 +4,15 @@
   inputs = {
     nixvim.url = "github:nix-community/nixvim";
     flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, nixvim, flake-utils, ... }@inputs:
+  outputs = { nixpkgs, nixvim, flake-utils, ... }:
     let config = import ./config;
     in flake-utils.lib.eachDefaultSystem (system:
       let
-        nixvimLib = nixvim.lib.${system};
         pkgs = import nixpkgs { inherit system; };
+        nixvimLib = nixvim.lib.${system};
         nixvim' = nixvim.legacyPackages.${system};
         nvim = nixvim'.makeNixvimWithModule {
           inherit pkgs;
@@ -19,6 +20,25 @@
         };
       in
       {
+        packages = {
+          # Lets you run `nix run .` to start nixvim
+          default = nvim;
+        };
+
+        nixosModules.nixvimConfig = _ : {
+          programs.neovim = {
+            enable = true;
+            package = nvim;
+          };
+        };
+
+        homeManagerModules.nixvimConfig = _ : {
+          programs.neovim = {
+            enable = true;
+            package = nvim;
+          };
+        };
+
         formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
 
         checks = {
@@ -26,11 +46,6 @@
             inherit nvim;
             name = "Solinaire's nixvim config";
           };
-        };
-
-        packages = {
-          # Lets you run `nix run .` to start nixvim
-          default = nvim;
         };
 
         devShells.default = import ./shell.nix { inherit pkgs; };
