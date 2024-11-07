@@ -1,5 +1,5 @@
 {
-  description = "Solinaire's nixvim config";
+  description = "solnixVim";
 
   inputs = {
     nixvim.url = "github:nix-community/nixvim";
@@ -25,14 +25,14 @@
           default = nvim;
         };
 
-        nixosModules.nixvimConfig = _ : {
+        nixosModules.solnixVim = _ : {
           programs.neovim = {
             enable = true;
             package = nvim;
           };
         };
 
-        homeManagerModules.nixvimConfig = _ : {
+        homeManagerModules.solnixVim = _ : {
           programs.neovim = {
             enable = true;
             package = nvim;
@@ -44,7 +44,7 @@
         checks = {
           default = nixvimLib.check.mkTestDerivationFromNvim {
             inherit nvim;
-            name = "Solinaire's nixvim config";
+            name = "solnixVim";
           };
         };
 
