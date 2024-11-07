@@ -7,7 +7,7 @@
     nixpkgs.url = "nixpkgs";
   };
 
-  outputs = { nixpkgs, nixvim, flake-utils, ... }:
+  outputs = { self, nixpkgs, nixvim, flake-utils, ... }:
     let config = import ./config;
     in flake-utils.lib.eachDefaultSystem (system:
       let
@@ -21,23 +21,9 @@
       in
       {
         packages = {
-          # Lets you run `nix run .` to start nixvim
           default = nvim;
         };
 
-        nixosModules.solnixVim = _ : {
-          programs.neovim = {
-            enable = true;
-            package = nvim;
-          };
-        };
-
-        homeManagerModules.solnixVim = _ : {
-          programs.neovim = {
-            enable = true;
-            package = nvim;
-          };
-        };
 
         formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
 
@@ -49,5 +35,20 @@
         };
 
         devShells.default = import ./shell.nix { inherit pkgs; };
-      });
+      }) // {
+
+        nixosModules.solnixVim = { pkgs, ... } : {
+          programs.neovim = {
+            enable = true;
+            package = self.packages.${pkgs.stdenv.system}.default;
+          };
+        };
+
+        homeManagerModules.solnixVim = { pkgs, ... }: {
+          programs.neovim = {
+            enable = true;
+            package = self.packages.${pkgs.stdenv.system}.default;
+          };
+        };
+    };
 }
