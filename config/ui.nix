@@ -7,7 +7,7 @@
           numbers = "none";
           offsets = [
             {
-              filetype = "NvimTree";
+              filetype = "NeoTree";
               text = "File Explorer";
               text_align = "center";
               padding = 1;
@@ -32,7 +32,7 @@
       settings = {
         options = {
           icons_enabled = false;
-          theme = "dracula";
+          theme = "catppuccin";
           component_separators = "|";
           section_separators = "";
         };

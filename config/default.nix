@@ -6,6 +6,7 @@
     ./options.nix
     ./treesitter.nix
     ./neo-tree.nix
+    ./misc.nix
     ./lsp/default.nix
     ./lsp/fidget.nix
     ./lsp/none-ls.nix
@@ -20,6 +21,7 @@
     ./utils/which-key.nix
     ./utils/transparent.nix
     ./utils/direnv.nix
+    ./utils/supermaven.nix
   ];
 
   colorschemes.catppuccin = {

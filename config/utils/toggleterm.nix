@@ -6,7 +6,6 @@
       float_opts = {
         border = "curved";
       };
-      open_mapping = "[[<leader>tt]]";
     };
   };
 }

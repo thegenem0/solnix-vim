@@ -4,6 +4,7 @@
   keymaps = [
     # Global
     {
+      mode = "n";
       key = "<leader>e";
       action = "<CMD>Neotree toggle<CR>";
       options.desc = "Toggle NeoTree";
@@ -11,11 +12,13 @@
 
     # Splits/Buffers
     {
+      mode = "n";
       key = "<leader>sh";
       action = "<CMD>split<CR>";
       options.desc = "Split horizontal";
     }
     {
+      mode = "n";
       key = "<leader>sv";
       action = "<CMD>vsplit<CR>";
       options.desc = "Split vertical";
@@ -36,18 +39,20 @@
 
     # File
     {
-      mode = "n";
-      key = "<leader>f";
-      action = "+find/file";
-    }
-    {
       # Format file
+      mode = "n";
       key = "<leader>fm";
       action = "<CMD>lua vim.lsp.buf.format()<CR>";
       options.desc = "Format the current buffer";
     }
 
     # Terminal
+    {
+      mode = "n";
+      key = "<leader>tt";
+      action = "<CMD>ToggleTerm<CR>";
+      options.desc = "Toggle Terminal";
+    }
     {
       # Escape terminal mode using ESC
       mode = "t";
@@ -96,6 +101,7 @@
       options.desc = "Rename";
     }
     {
+      mode = "n";
       key = "<leader>co";
       action = "<CMD>Lspsaga outline<CR>";
       options.desc = "Outline";
@@ -135,7 +141,7 @@
     {
       mode = "n";
       key = "x";
-      action = "'_x";
+      action = "\"_x";
       options.desc = "Delete Char without Copy";
     }
   ];
