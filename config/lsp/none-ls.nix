@@ -3,18 +3,36 @@
     enable = true;
     sources = {
       diagnostics = {
+        dotenv_linter.enable = true;
         golangci_lint.enable = true;
         ktlint.enable = true;
+        markdownlint.enable = true;
         statix.enable = true;
+        stylelint.enable = true;
+        terraform_validate.enable = true;
+        tfsec.enable = true;
+        todo_comments.enable = true;
+        yamllint.enable = true;
+        zsh.enable = true;
       };
       formatting = {
+        blackd.enable = true;
         gofmt.enable = true;
         goimports.enable = true;
         ktlint.enable = true;
-        nixfmt.enable = true;
         markdownlint.enable = true;
+        nixfmt.enable = true;
+        prettierd.enable = true;
         shellharden.enable = true;
         shfmt.enable = true;
+        stylelint.enable = true;
+        stylua.enable = true;
+        terraform_fmt.enable = true;
+        yamlfmt.enable = true;
+      };
+      hover = {
+        dictionary.enable = true;
+        printenv.enable = true;
       };
     };
   };
