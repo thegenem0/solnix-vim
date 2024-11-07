@@ -1,5 +1,5 @@
 {
-  description = "solnixVim";
+  description = "solnix-vim";
 
   inputs = {
     nixvim.url = "github:nix-community/nixvim";
@@ -30,21 +30,21 @@
         checks = {
           default = nixvimLib.check.mkTestDerivationFromNvim {
             inherit nvim;
-            name = "solnixVim";
+            name = "solnix-vim";
           };
         };
 
         devShells.default = import ./shell.nix { inherit pkgs; };
       }) // {
 
-        nixosModules.solnixVim = { pkgs, ... } : {
+        nixosModules.default = { pkgs, ... } : {
           programs.neovim = {
             enable = true;
             package = self.packages.${pkgs.stdenv.system}.default;
           };
         };
 
-        homeManagerModules.solnixVim = { pkgs, ... }: {
+        homeManagerModules.default = { pkgs, ... }: {
           programs.neovim = {
             enable = true;
             package = self.packages.${pkgs.stdenv.system}.default;
