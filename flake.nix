@@ -11,19 +11,18 @@
     let config = import ./config;
     in flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          config.allowUnfree = true;
+          inherit system;
+        };
         nixvimLib = nixvim.lib.${system};
         nixvim' = nixvim.legacyPackages.${system};
         nvim = nixvim'.makeNixvimWithModule {
           inherit pkgs;
           module = config;
         };
-      in
-      {
-        packages = {
-          default = nvim;
-        };
-
+      in {
+        packages = { default = nvim; };
 
         formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
 
