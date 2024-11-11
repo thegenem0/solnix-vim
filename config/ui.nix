@@ -5,16 +5,14 @@
       settings = {
         options = {
           numbers = "none";
-          offsets = [
-            {
-              filetype = "NeoTree";
-              text = "File Explorer";
-              text_align = "center";
-              padding = 1;
-              color = "transparent";
-              hl = "Directory";
-            }
-          ];
+          offsets = [{
+            filetype = "NeoTree";
+            text = "File Explorer";
+            text_align = "center";
+            padding = 1;
+            color = "transparent";
+            hl = "Directory";
+          }];
         };
       };
     };
@@ -39,17 +37,11 @@
         sections = {
           lualine_a = [ "mode" ];
           lualine_b = [ "branch" ];
-          lualine_c = [
-            {
-              __unkeyed_1 = "filename";
-              path = 1;
-            }
-          ];
-          lualine_x = [
-            "encoding"
-            "fileformat"
-            "filetype"
-          ];
+          lualine_c = [{
+            __unkeyed_1 = "filename";
+            path = 1;
+          }];
+          lualine_x = [ "encoding" "fileformat" "filetype" ];
           lualine_y = [ "progress" ];
           lualine_z = [ "location" ];
         };
@@ -61,9 +53,9 @@
       settings = {
         lsp = {
           override = {
-             "cmp.entry.get_documentation" = true;
-             "vim.lsp.util.convert_input_to_markdown_lines" = true;
-             "vim.lsp.util.stylize_markdown" = true;
+            "cmp.entry.get_documentation" = true;
+            "vim.lsp.util.convert_input_to_markdown_lines" = true;
+            "vim.lsp.util.stylize_markdown" = true;
           };
         };
       };
@@ -86,5 +78,6 @@
       };
     };
 
+    render-markdown.enable = true;
   };
 }
