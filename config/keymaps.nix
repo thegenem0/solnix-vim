@@ -90,9 +90,15 @@
     }
     {
       mode = "n";
-      key = "<leader>gd";
+      key = "<leader>pd";
       action = "<CMD>Lspsaga peek_definition<CR>";
       options.desc = "Peek definition";
+    }
+    {
+      mode = "n";
+      key = "<leader>gd";
+      action = "<CMD>lua vim.lsp.buf.definition()<CR>";
+      options.desc = "Goto definition";
     }
     {
       mode = "n";

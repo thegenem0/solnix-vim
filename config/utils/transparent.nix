@@ -7,12 +7,8 @@
       require("transparent").clear_prefix("Trouble")
     '';
 
-    settings = {
-      extra_groups = [
-        "help"
-        "terminal"
-        "dashboard"
-      ];
+    settings = { 
+      extra_groups = [ "help" "terminal" "dashboard" ]; 
     };
   };
 }

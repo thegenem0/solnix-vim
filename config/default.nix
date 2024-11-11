@@ -1,20 +1,20 @@
 {
   imports = [
-    ./cmp.nix
     ./ui.nix
     ./keymaps.nix
     ./options.nix
-    ./treesitter.nix
-    ./neo-tree.nix
     ./misc.nix
     ./lsp/default.nix
     ./lsp/fidget.nix
+    ./lsp/cmp.nix
     ./lsp/none-ls.nix
+    ./lsp/treesitter.nix
     ./lsp/trouble.nix
     ./lsp/lspsaga.nix
     ./utils/auto-pairs.nix
     ./utils/autosave.nix
     ./utils/blankline.nix
+    ./utils/neo-tree.nix
     ./utils/lazygit.nix
     ./utils/telescope.nix
     ./utils/toggleterm.nix
