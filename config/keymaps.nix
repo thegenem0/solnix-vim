@@ -90,9 +90,9 @@
     }
     {
       mode = "n";
-      key = "<leader>pd";
+      key = "<leader>cd";
       action = "<CMD>Lspsaga peek_definition<CR>";
-      options.desc = "Peek definition";
+      options.desc = "Check definition";
     }
     {
       mode = "n";
