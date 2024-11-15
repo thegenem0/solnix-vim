@@ -114,7 +114,7 @@
     }
     {
       mode = "n";
-      key = "<C-k>";
+      key = "<leader>sd";
       action = "<CMD>RustLsp renderDiagnostic current<CR>";
       options.desc = "Render diagnostic";
     }
