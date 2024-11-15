@@ -36,7 +36,6 @@
       options.desc = "Buffer Cycle Next";
     }
 
-
     # File
     {
       # Format file
@@ -62,10 +61,11 @@
     }
 
     # Trouble
-     {
+    {
       mode = "n";
       key = "<leader>ts";
-      action = "<CMD>Trouble symbols toggle pinned=true win.relative=win win.position=right<cr>";
+      action =
+        "<CMD>Trouble symbols toggle pinned=true win.relative=win win.position=right<cr>";
       options.desc = "Symbols";
     }
     {
@@ -114,9 +114,15 @@
     }
     {
       mode = "n";
-      key = "<leader>sd";
-      action = "<CMD>RustLsp renderDiagnostic current<CR>";
-      options.desc = "Render diagnostic";
+      key = "N";
+      action = "<CMD>Lspsaga diagnostic_jump_next<CR>";
+      options.desc = "Next diagnostic";
+    }
+    {
+      mode = "n";
+      key = "P";
+      action = "<CMD>Lspsaga diagnostic_jump_prev<CR>";
+      options.desc = "Prev diagnostic";
     }
 
     # Misc
@@ -153,7 +159,7 @@
     {
       mode = "n";
       key = "x";
-      action = "\"_x";
+      action = ''"_x'';
       options.desc = "Delete Char without Copy";
     }
   ];
