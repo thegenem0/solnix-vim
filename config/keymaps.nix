@@ -112,6 +112,12 @@
       action = "<CMD>Lspsaga outline<CR>";
       options.desc = "Outline";
     }
+    {
+      mode = "n";
+      key = "<C-k>";
+      action = "<CMD>RustLsp renderDiagnostic current<CR>";
+      options.desc = "Render diagnostic";
+    }
 
     # Misc
     {

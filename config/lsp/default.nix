@@ -1,8 +1,6 @@
 { pkgs, lib, ... }:
-let
-  custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
-in
-{
+let custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
+in {
   plugins = {
     lsp = {
       enable = true;
@@ -19,7 +17,7 @@ in
           package = custom-servers.gitlab-ci-ls;
         };
         gopls.enable = true;
-        gradle_ls ={
+        gradle_ls = {
           enable = true;
           package = pkgs.vscode-extensions.vscjava.vscode-gradle;
         };
@@ -39,6 +37,15 @@ in
         zls.enable = true;
       };
     };
-    rustaceanvim.enable = true;
+    rustaceanvim = {
+      enable = true;
+      settings = {
+        server = {
+          default_settings = {
+            inlayHints = { lifetimeElisionHints = { enable = "always"; }; };
+          };
+        };
+      };
+    };
   };
 }
