@@ -27,8 +27,25 @@ in {
         ltex.enable = true;
         lua_ls.enable = true;
         nixd.enable = true;
-        pyright.enable = true;
-        ruff_lsp.enable = true;
+        pyright = {
+          enable = true;
+          settings = {
+            pyright = {
+              # Imports are organized by Ruff
+              disableOrganizeImports = true;
+              python.analysis.autoImportCompletions = true;
+            };
+          };
+        };
+        ruff = {
+          enable = true;
+          # Hover should be handled by PyRight
+          onAttach.function = ''
+            if client.name == "ruff" then
+              client.server_capabilities.hoverProvider = false
+            end
+          '';
+        };
         tailwindcss.enable = true;
         terraformls.enable = true;
         tflint.enable = true;

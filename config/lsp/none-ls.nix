@@ -16,7 +16,6 @@
         zsh.enable = true;
       };
       formatting = {
-        blackd.enable = true;
         gofmt.enable = true;
         goimports.enable = true;
         ktlint.enable = true;
