@@ -125,6 +125,32 @@
       options.desc = "Prev diagnostic";
     }
 
+    # Obsidian
+    {
+      mode = "n";
+      key = "<leader>od";
+      action = "<CMD>ObsidianDailies<CR>";
+      options.desc = "Obsidian dailies";
+    }
+    {
+      mode = "n";
+      key = "<leader>ot";
+      action = "<CMD>ObsidianTemplate<CR>";
+      options.desc = "Obsidian templates";
+    }
+    {
+      mode = "n";
+      key = "<leader>on";
+      action = "<CMD>ObsidianNewFromTemplate<CR>";
+      options.desc = "Obsidian new";
+    }
+    {
+      mode = "n";
+      key = "<leader>os";
+      action = "<CMD>ObsidianQuickSwitch<CR>";
+      options.desc = "Obsidian quick switch";
+    }
+
     # Misc
     {
       mode = "n";
