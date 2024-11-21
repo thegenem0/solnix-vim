@@ -21,6 +21,7 @@
 
     opts = {
       updatetime = 100;
+      conceallevel = 2;
 
       number = true;
       relativenumber = true;

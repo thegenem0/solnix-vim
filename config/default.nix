@@ -16,6 +16,7 @@
     ./utils/blankline.nix
     ./utils/neo-tree.nix
     ./utils/lazygit.nix
+    ./utils/obsidian.nix
     ./utils/telescope.nix
     ./utils/toggleterm.nix
     ./utils/which-key.nix

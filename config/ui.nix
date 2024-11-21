@@ -78,6 +78,8 @@
       };
     };
 
+    image.enable = true;
+
     render-markdown.enable = true;
   };
 }
