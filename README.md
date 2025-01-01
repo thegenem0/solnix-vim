@@ -89,7 +89,7 @@ You can start using the setup without worrying about external dependencies.
 
 ## Acknowledgments
 
-A huge thanks to [**Mikael Fangel**](https://github.com/MikaelFangelhttps://github.com/MikaelFangelhttps://github.com/MikaelFangel) for creating the original NixVim configuration
+A huge thanks to [**Mikael Fangel**](https://github.com/MikaelFangel) for creating the original NixVim configuration
 that served as a base for this one.
 
 ---
