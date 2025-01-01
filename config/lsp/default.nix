@@ -11,6 +11,7 @@ in {
         cssls.enable = true;
         docker_compose_language_service.enable = true;
         dockerls.enable = true;
+        elixirls.enable = true;
         eslint.enable = true;
         gitlab_ci_ls = {
           enable = true;

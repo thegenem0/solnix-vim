@@ -14,6 +14,7 @@
     ./utils/auto-pairs.nix
     ./utils/autosave.nix
     ./utils/blankline.nix
+    ./utils/manpager.nix
     ./utils/neo-tree.nix
     ./utils/lazygit.nix
     ./utils/obsidian.nix
