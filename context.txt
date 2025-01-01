@@ -1,0 +1,1009 @@
+// File: shell.nix
+{ pkgs }:
+
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    # Rust
+    cargo
+    rustc
+
+    # Go
+    go
+
+    # Kotlin
+    kotlin-native
+
+    # Tools
+    ripgrep
+    jq
+  ];
+}
+
+
+// File: flake.nix
+{
+  description = "solnix-vim";
+
+  inputs = {
+    nixvim.url = "github:nix-community/nixvim";
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "nixpkgs";
+  };
+
+  outputs = { nixpkgs, nixvim, flake-utils, ... }:
+    let config = import ./config;
+    in flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          config.allowUnfree = true;
+          inherit system;
+        };
+        nixvimLib = nixvim.lib.${system};
+        nixvim' = nixvim.legacyPackages.${system};
+        nvim = nixvim'.makeNixvimWithModule {
+          inherit pkgs;
+          module = config;
+        };
+      in {
+        packages = { default = nvim; };
+
+        formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+
+        checks = {
+          default = nixvimLib.check.mkTestDerivationFromNvim {
+            inherit nvim;
+            name = "solnix-vim";
+          };
+        };
+
+        devShells.default = import ./shell.nix { inherit pkgs; };
+      });
+}
+
+
+// File: config/misc.nix
+{
+  plugins = {
+    tmux-navigator.enable = true;
+    comment.enable = true;
+    sleuth.enable = true;
+    todo-comments.enable = true;
+  };
+}
+
+
+// File: config/default.nix
+{
+  imports = [
+    ./ui.nix
+    ./keymaps.nix
+    ./options.nix
+    ./misc.nix
+    ./lsp/default.nix
+    ./lsp/fidget.nix
+    ./lsp/cmp.nix
+    ./lsp/none-ls.nix
+    ./lsp/treesitter.nix
+    ./lsp/trouble.nix
+    ./lsp/lspsaga.nix
+    ./utils/auto-pairs.nix
+    ./utils/autosave.nix
+    ./utils/blankline.nix
+    ./utils/manpager.nix
+    ./utils/neo-tree.nix
+    ./utils/lazygit.nix
+    ./utils/obsidian.nix
+    ./utils/telescope.nix
+    ./utils/toggleterm.nix
+    ./utils/which-key.nix
+    ./utils/transparent.nix
+    ./utils/direnv.nix
+    ./utils/supermaven.nix
+  ];
+
+  colorschemes.catppuccin = {
+    enable = true;
+    settings = {
+      flavour = "mocha";
+    };
+  };
+  plugins.web-devicons.enable = true;
+
+  diagnostics = { virtual_lines.only_current_line = true; };
+}
+
+
+// File: config/ui.nix
+{
+  plugins = {
+    bufferline = {
+      enable = true;
+      settings = {
+        options = {
+          numbers = "none";
+          offsets = [{
+            filetype = "NeoTree";
+            text = "File Explorer";
+            text_align = "center";
+            padding = 1;
+            color = "transparent";
+            hl = "Directory";
+          }];
+        };
+      };
+    };
+
+    gitsigns = {
+      enable = true;
+      settings = {
+        current_line_blame = true;
+        trouble = true;
+      };
+    };
+
+    lualine = {
+      enable = true;
+      settings = {
+        options = {
+          icons_enabled = false;
+          theme = "catppuccin";
+          component_separators = "|";
+          section_separators = "";
+        };
+        sections = {
+          lualine_a = [ "mode" ];
+          lualine_b = [ "branch" ];
+          lualine_c = [{
+            __unkeyed_1 = "filename";
+            path = 1;
+          }];
+          lualine_x = [ "encoding" "fileformat" "filetype" ];
+          lualine_y = [ "progress" ];
+          lualine_z = [ "location" ];
+        };
+      };
+    };
+
+    noice = {
+      enable = true;
+      settings = {
+        lsp = {
+          override = {
+            "cmp.entry.get_documentation" = true;
+            "vim.lsp.util.convert_input_to_markdown_lines" = true;
+            "vim.lsp.util.stylize_markdown" = true;
+          };
+        };
+      };
+    };
+
+    notify = {
+      enable = true;
+      backgroundColour = "#000000";
+      render = "minimal";
+      stages = "fade";
+      timeout = 2000;
+      extraOptions = {
+        icons = {
+          ERROR = "";
+          WARN = "";
+          INFO = "";
+          DEBUG = "";
+          TRACE = "✎";
+        };
+      };
+    };
+
+    image.enable = true;
+
+    render-markdown.enable = true;
+  };
+}
+
+
+// File: config/keymaps.nix
+{
+  globals.mapleader = " ";
+
+  keymaps = [
+    # Global
+    {
+      mode = "n";
+      key = "<leader>e";
+      action = "<CMD>Neotree toggle<CR>";
+      options.desc = "Toggle NeoTree";
+    }
+
+    # Splits/Buffers
+    {
+      mode = "n";
+      key = "<leader>sh";
+      action = "<CMD>split<CR>";
+      options.desc = "Split horizontal";
+    }
+    {
+      mode = "n";
+      key = "<leader>sv";
+      action = "<CMD>vsplit<CR>";
+      options.desc = "Split vertical";
+    }
+    {
+      mode = "n";
+      key = "<leader>p";
+      action = "<cmd>BufferLineCyclePrev<cr>";
+      options.desc = "Buffer Cycle Prev";
+    }
+    {
+      mode = "n";
+      key = "<leader>n";
+      action = "<cmd>BufferLineCycleNext<cr>";
+      options.desc = "Buffer Cycle Next";
+    }
+
+    # File
+    {
+      # Format file
+      mode = "n";
+      key = "<leader>fm";
+      action = "<CMD>lua vim.lsp.buf.format()<CR>";
+      options.desc = "Format the current buffer";
+    }
+
+    # Terminal
+    {
+      mode = "n";
+      key = "<leader>tt";
+      action = "<CMD>ToggleTerm<CR>";
+      options.desc = "Toggle Terminal";
+    }
+    {
+      # Escape terminal mode using ESC
+      mode = "t";
+      key = "<esc>";
+      action = "<C-\\><C-n>";
+      options.desc = "Escape terminal mode";
+    }
+
+    # Trouble
+    {
+      mode = "n";
+      key = "<leader>ts";
+      action =
+        "<CMD>Trouble symbols toggle pinned=true win.relative=win win.position=right<cr>";
+      options.desc = "Symbols";
+    }
+    {
+      mode = "n";
+      key = "<leader>tr";
+      action = "<CMD>Trouble diagnostics toggle filter.buf=0 focus=true<cr>";
+      options.desc = "Buffer Diagnostics (Trouble)";
+    }
+
+    # LSP
+    {
+      mode = "n";
+      key = "<leader>ca";
+      action = "<CMD>Lspsaga code_action<CR>";
+      options.desc = "Code action";
+    }
+    {
+      mode = "n";
+      key = "K";
+      action = "<CMD>Lspsaga hover_doc<CR>";
+      options.desc = "Hover doc";
+    }
+    {
+      mode = "n";
+      key = "<leader>cd";
+      action = "<CMD>Lspsaga peek_definition<CR>";
+      options.desc = "Check definition";
+    }
+    {
+      mode = "n";
+      key = "<leader>gd";
+      action = "<CMD>lua vim.lsp.buf.definition()<CR>";
+      options.desc = "Goto definition";
+    }
+    {
+      mode = "n";
+      key = "<leader>rn";
+      action = "<CMD>Lspsaga rename<CR>";
+      options.desc = "Rename";
+    }
+    {
+      mode = "n";
+      key = "<leader>co";
+      action = "<CMD>Lspsaga outline<CR>";
+      options.desc = "Outline";
+    }
+    {
+      mode = "n";
+      key = "N";
+      action = "<CMD>Lspsaga diagnostic_jump_next<CR>";
+      options.desc = "Next diagnostic";
+    }
+    {
+      mode = "n";
+      key = "P";
+      action = "<CMD>Lspsaga diagnostic_jump_prev<CR>";
+      options.desc = "Prev diagnostic";
+    }
+
+    # Obsidian
+    {
+      mode = "n";
+      key = "<leader>od";
+      action = "<CMD>ObsidianDailies<CR>";
+      options.desc = "Obsidian dailies";
+    }
+    {
+      mode = "n";
+      key = "<leader>ot";
+      action = "<CMD>ObsidianTemplate<CR>";
+      options.desc = "Obsidian templates";
+    }
+    {
+      mode = "n";
+      key = "<leader>on";
+      action = "<CMD>ObsidianNewFromTemplate<CR>";
+      options.desc = "Obsidian new";
+    }
+    {
+      mode = "n";
+      key = "<leader>os";
+      action = "<CMD>ObsidianQuickSwitch<CR>";
+      options.desc = "Obsidian quick switch";
+    }
+
+    # Misc
+    {
+      mode = "n";
+      key = "<Up>";
+      action = "<Nop>";
+      options.desc = "Disabled arrow up";
+    }
+    {
+      mode = "n";
+      key = "<Down>";
+      action = "<Nop>";
+      options.desc = "Disabled arrow down";
+    }
+    {
+      mode = "n";
+      key = "<Left>";
+      action = "<Nop>";
+      options.desc = "Disabled arrow left";
+    }
+    {
+      mode = "n";
+      key = "<Right>";
+      action = "<Nop>";
+      options.desc = "Disabled arrow right";
+    }
+    {
+      mode = "n";
+      key = "<leader>ch";
+      action = ":nohl<CR>";
+      options.desc = "Clear Search Highlights";
+    }
+    {
+      mode = "n";
+      key = "x";
+      action = ''"_x'';
+      options.desc = "Delete Char without Copy";
+    }
+  ];
+}
+
+
+// File: config/options.nix
+{ lib, pkgs, ... }:
+
+{
+  config = {
+    extraConfigVim = ''
+      autocmd BufRead,BufNewFile *.pl set filetype=prolog
+    '';
+
+    extraConfigLua = ''
+      vim.opt.iskeyword:append("-")
+      vim.wo.signcolumn = 'yes'
+      vim.cmd([[
+        command! W write
+        command! Q quit
+        command! Wq write | quit
+        command! WQ write | quit
+        noremap q <Nop>
+        noremap Q q
+      ]])
+    '';
+
+    opts = {
+      updatetime = 100;
+      conceallevel = 2;
+
+      number = true;
+      relativenumber = true;
+      splitbelow = true;
+      splitright = true;
+      scrolloff = 4;
+
+      clipboard = "unnamedplus";
+      shiftwidth = 4;
+      tabstop = 4;
+      expandtab = true;
+      autoindent = true;
+      smartindent = true;
+
+      ignorecase = true;
+      incsearch = true;
+      smartcase = true;
+      wildmode = "list:longest";
+      signcolumn = "yes";
+
+      swapfile = false;
+      undofile = true; # Build-in persistent undo
+
+      backspace = "indent,eol,start";
+
+      mouse = "a";
+
+      termguicolors = lib.mkForce pkgs.stdenv.isLinux;
+    };
+  };
+}
+
+
+// File: config/utils/obsidian.nix
+{
+  plugins.obsidian = {
+    enable = true;
+    settings = {
+      dir = "~/Documents/obsidian";
+      workspaces = [
+        {
+          name = "Notes";
+          path = "~/Documents/obsidian/notes";
+        }
+        {
+          name = "Templates";
+          path = "~/Documents/obsidian/templates";
+        }
+      ];
+      ui = { enabled = false; };
+
+      daily_notes = {
+        date_format = "%Y-%m-%d-%a";
+        folder = "notes/dailies";
+        template = "daily.md";
+      };
+
+      templates = {
+        date_format = "%Y-%m-%d-%a";
+        hour_format = "%H:%M";
+        subdir = "templates";
+      };
+    };
+  };
+}
+
+
+// File: config/utils/neo-tree.nix
+{ plugins.neo-tree.enable = true; }
+
+
+// File: config/utils/supermaven.nix
+{ pkgs, ...}:
+let
+    pname = "supermaven";
+    version = "v.1.0";
+in
+{
+  extraPlugins = with pkgs.vimUtils; [
+    (buildVimPlugin {
+      inherit pname version;
+      src = pkgs.fetchFromGitHub {
+        owner = "supermaven-inc";
+        repo = "supermaven-nvim";
+        rev = "main";
+        hash = "sha256-1z3WKIiikQqoweReUyK5O8MWSRN5y95qcxM6qzlKMME=";
+      };
+    })
+  ];
+
+  extraConfigLua = ''
+    require("supermaven-nvim").setup({});
+  '';
+}
+
+
+// File: config/utils/manpager.nix
+{ pkgs, ...}:
+let
+    pname = "vim-manpager";
+    version = "v.1.0";
+in
+{
+  extraPlugins = with pkgs.vimUtils; [
+    (buildVimPlugin {
+      inherit pname version;
+      src = pkgs.fetchFromGitHub {
+        owner = "lambdalisue";
+        repo = "vim-manpager";
+        rev = "master";
+        hash = "sha256-VLYGk6RiT/Vej3woPmpOe9ebiDDQms6B8xKw1aGouoQ=";
+      };
+    })
+  ];
+}
+
+
+// File: config/utils/direnv.nix
+{ plugins.direnv = { enable = true; }; }
+
+
+// File: config/utils/which-key.nix
+{ plugins.which-key = { enable = true; }; }
+
+
+// File: config/utils/toggleterm.nix
+{
+  plugins.toggleterm = {
+    enable = true;
+    settings = {
+      direction = "float";
+      float_opts = {
+        border = "curved";
+      };
+    };
+  };
+}
+
+
+// File: config/utils/transparent.nix
+{
+  plugins.transparent = {
+    enable = true;
+    luaConfig.post = ''
+      require("transparent").clear_prefix("BufferLine")
+      require("transparent").clear_prefix("NeoTree")
+      require("transparent").clear_prefix("Trouble")
+    '';
+
+    settings = { 
+      extra_groups = [ "help" "terminal" "dashboard" ]; 
+    };
+  };
+}
+
+
+// File: config/utils/autosave.nix
+{
+  plugins.auto-save = {
+    enable = true;
+    settings.enabled = true;
+  };
+}
+
+
+// File: config/utils/lazygit.nix
+{
+  plugins.lazygit = {
+    enable = true;
+  };
+}
+
+
+// File: config/utils/telescope.nix
+{
+  plugins.telescope = {
+    enable = true;
+    keymaps = {
+      "<leader>fs" = "live_grep";
+      "<leader>ff" = "find_files";
+      "<leader>fr" = "oldfiles";
+      "<leader>fd" = "diagnostics";
+    };
+    settings = {
+      defaults = {
+        mappings = {
+          i = {
+            "<C-j>" = {
+              __raw = "require('telescope.actions').move_selection_next";
+            };
+            "<C-k>" = {
+              __raw = "require('telescope.actions').move_selection_previous";
+            };
+            "<C-u>" = false;
+            "<C-d>" = false;
+          };
+        };
+      };
+    };
+    extensions.fzf-native = { enable = true; };
+  };
+}
+
+
+// File: config/utils/auto-pairs.nix
+{ plugins.nvim-autopairs = { enable = true; }; }
+
+
+// File: config/utils/blankline.nix
+{
+  plugins.indent-blankline = {
+    enable = true;
+    settings = {
+      indent = {
+        smart_indent_cap = true;
+        char = " ";
+      };
+      scope = {
+        enabled = true;
+        char = "│";
+      };
+    };
+  };
+}
+
+
+// File: config/lsp/trouble.nix
+{
+  plugins = {
+    trouble.enable = true;
+  };
+}
+
+
+// File: config/lsp/none-ls.nix
+{
+  plugins.none-ls = {
+    enable = true;
+    sources = {
+      diagnostics = {
+        dotenv_linter.enable = true;
+        golangci_lint.enable = true;
+        ktlint.enable = true;
+        markdownlint.enable = true;
+        statix.enable = true;
+        stylelint.enable = true;
+        terraform_validate.enable = true;
+        tfsec.enable = true;
+        todo_comments.enable = true;
+        yamllint.enable = true;
+        zsh.enable = true;
+      };
+      formatting = {
+        gofmt.enable = true;
+        goimports.enable = true;
+        ktlint.enable = true;
+        markdownlint.enable = true;
+        nixfmt.enable = true;
+        prettierd.enable = true;
+        shellharden.enable = true;
+        shfmt.enable = true;
+        stylelint.enable = true;
+        stylua.enable = true;
+        terraform_fmt.enable = true;
+        yamlfmt.enable = true;
+      };
+      hover = {
+        dictionary.enable = true;
+        printenv.enable = true;
+      };
+    };
+  };
+}
+
+
+// File: config/lsp/treesitter.nix
+{ pkgs, ... }:
+{
+  plugins = {
+    treesitter = {
+      enable = true;
+      nixGrammars = true;
+      settings = {
+        highlight.enable = true;
+        indent.enable = true;
+      };
+      grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+        vim
+        regex
+        lua
+        luadoc
+        luap
+        bash
+        markdown
+        markdown_inline
+        html
+        json
+        javascript
+        tsx
+        typescript
+        yaml
+        go
+        python
+        rust
+        nix
+        zig
+        c
+        cpp
+        cmake
+        make
+      ];
+    };
+    treesitter-context = {
+      enable = true;
+      settings = { max_lines = 2; };
+    };
+    rainbow-delimiters.enable = true;
+  };
+}
+
+
+// File: config/lsp/default.nix
+{ pkgs, lib, ... }:
+let custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
+in {
+  plugins = {
+    lsp = {
+      enable = true;
+      servers = {
+        bashls.enable = true;
+        clangd.enable = true;
+        cmake.enable = true;
+        cssls.enable = true;
+        docker_compose_language_service.enable = true;
+        dockerls.enable = true;
+        elixirls.enable = true;
+        eslint.enable = true;
+        gitlab_ci_ls = {
+          enable = true;
+          package = custom-servers.gitlab-ci-ls;
+        };
+        gopls.enable = true;
+        gradle_ls = {
+          enable = true;
+          package = pkgs.vscode-extensions.vscjava.vscode-gradle;
+        };
+        jqls.enable = true;
+        jsonls.enable = true;
+        kotlin_language_server.enable = true;
+        ltex.enable = true;
+        lua_ls.enable = true;
+        nixd.enable = true;
+        pyright = {
+          enable = true;
+          settings = {
+            pyright = {
+              # Imports are organized by Ruff
+              disableOrganizeImports = true;
+              python.analysis.autoImportCompletions = true;
+            };
+          };
+        };
+        ruff = {
+          enable = true;
+          # Hover should be handled by PyRight
+          onAttach.function = ''
+            if client.name == "ruff" then
+              client.server_capabilities.hoverProvider = false
+            end
+          '';
+        };
+        tailwindcss.enable = true;
+        terraformls.enable = true;
+        tflint.enable = true;
+        ts_ls.enable = true;
+        yamlls.enable = true;
+        zls.enable = true;
+      };
+    };
+    rustaceanvim = {
+      enable = true;
+      settings = {
+        server = {
+          default_settings = {
+            inlayHints = { lifetimeElisionHints = { enable = "always"; }; };
+          };
+        };
+      };
+    };
+  };
+}
+
+
+// File: config/lsp/cmp.nix
+# # Source: https://github.com/hmajid2301/dotfiles/blob/ab7098387426f73c461950c7c0a4f8fb4c843a2c/home-manager/editors/nvim/plugins/coding/cmp.nix
+{
+  plugins = {
+    luasnip.enable = true;
+
+    cmp-buffer = { enable = true; };
+
+    cmp-emoji = { enable = true; };
+
+    cmp-nvim-lsp = { enable = true; };
+
+    cmp-path = { enable = true; };
+
+    cmp_luasnip = { enable = true; };
+
+    cmp = {
+      enable = true;
+
+      settings = {
+        snippet.expand = ''
+          function(args)
+            require('luasnip').lsp_expand(args.body)
+          end
+        '';
+        sources = [
+          { name = "nvim_lsp"; }
+          { name = "luasnip"; }
+          {
+            name = "buffer";
+            option.get_bufnrs.__raw = "vim.api.nvim_list_bufs";
+          }
+          { name = "nvim_lua"; }
+          { name = "path"; }
+        ];
+
+        completeopt = "menu,menuone,noinsert";
+
+        formatting = {
+          fields = [ "abbr" "kind" "menu" ];
+          format =
+            # lua
+            ''
+              function(entry, item)
+                local icons = {
+                  Namespace = "󰌗",
+                  Text = "󰉿",
+                  Method = "󰆧",
+                  Function = "󰆧",
+                  Constructor = "",
+                  Field = "󰜢",
+                  Variable = "󰀫",
+                  Class = "󰠱",
+                  Interface = "",
+                  Module = "",
+                  Property = "󰜢",
+                  Unit = "󰑭",
+                  Value = "󰎠",
+                  Enum = "",
+                  Keyword = "󰌋",
+                  Snippet = "",
+                  Color = "󰏘",
+                  File = "󰈚",
+                  Reference = "󰈇",
+                  Folder = "󰉋",
+                  EnumMember = "",
+                  Constant = "󰏿",
+                  Struct = "󰙅",
+                  Event = "",
+                  Operator = "󰆕",
+                  TypeParameter = "󰊄",
+                  Table = "",
+                  Object = "󰅩",
+                  Tag = "",
+                  Array = "[]",
+                  Boolean = "",
+                  Number = "",
+                  Null = "󰟢",
+                  String = "󰉿",
+                  Calendar = "",
+                  Watch = "󰥔",
+                  Package = "",
+                  Codeium = "",
+                  TabNine = "",
+                }
+
+                local icon = icons[item.kind] or ""
+                item.kind = string.format("%s %s", icon, item.kind or "")
+
+                item.menu = ({
+                  buffer = "[Buffer]",
+                  nvim_lsp = "[LSP]",
+                  luasnip = "[LuaSnip]",
+                  nvim_lua = "[Lua]",
+                  latex_symbols = "[LaTeX]",
+                })[entry.source.name]
+
+                return item
+              end
+            '';
+        };
+
+        window = {
+          completion = {
+            winhighlight =
+              "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel";
+            scrollbar = false;
+            sidePadding = 0;
+            border = [ "╭" "─" "╮" "│" "╯" "─" "╰" "│" ];
+          };
+
+          settings.documentation = {
+            border = [ "╭" "─" "╮" "│" "╯" "─" "╰" "│" ];
+            winhighlight =
+              "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel";
+          };
+        };
+
+        mapping = {
+          "<C-j>" = "cmp.mapping.select_next_item()";
+          "<C-k>" = "cmp.mapping.select_prev_item()";
+          "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+          "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          "<C-Space>" = "cmp.mapping.complete()";
+          "<C-e>" = "cmp.mapping.close()";
+          "<CR>" =
+            "cmp.mapping(cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Insert }))";
+        };
+      };
+    };
+  };
+}
+
+
+// File: config/lsp/custom-servers.nix
+{ pkgs, ... }:
+let
+  gitlab-ci-ls = pkgs.rustPlatform.buildRustPackage rec {
+    pname = "gitlab-ci-ls";
+    version = "0.22.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "alesbrelih";
+      repo = "gitlab-ci-ls";
+      rev = "${version}";
+      sha256 = "sha256-RXM581tW78YzH+NQhkpsbHz6m+PAF7NQ5p3TFugPo+M=";
+    };
+
+    cargoHash = "sha256-PuNpkDjoJr1GttETWHA9X+LYNIJSgBXdZId5q2JSo6g=";
+
+    nativeBuildInputs = with pkgs; [ pkg-config ];
+    buildInputs = with pkgs; [ openssl ];
+
+    doCheck = false;
+
+    meta = with pkgs.lib; {
+      description = "GitLab CI Language Server";
+      homepage = "https://github.com/alesbrelih/gitlab-ci-ls";
+      license = licenses.mit;
+      maintainers = [];
+    };
+  };
+
+in
+{
+  inherit gitlab-ci-ls;
+}
+
+
+// File: config/lsp/fidget.nix
+{
+  plugins.fidget = {
+    enable = true;
+    progress = {
+      suppressOnInsert = true;
+      ignoreDoneAlready = true;
+      pollRate = 0.5;
+    };
+  };
+}
+
+
+// File: config/lsp/lspsaga.nix
+{
+  plugins.lspsaga = {
+    enable = true;
+    codeAction = {
+      onlyInCursor = true;
+    };
+  };
+}
+
+
