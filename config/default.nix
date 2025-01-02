@@ -28,9 +28,7 @@
 
   colorschemes.catppuccin = {
     enable = true;
-    settings = {
-      flavour = "mocha";
-    };
+    settings = { flavour = "mocha"; };
   };
   plugins.web-devicons.enable = true;
 

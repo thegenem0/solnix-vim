@@ -11,7 +11,6 @@ in {
         cssls.enable = true;
         docker_compose_language_service.enable = true;
         dockerls.enable = true;
-        elixirls.enable = true;
         eslint.enable = true;
         gitlab_ci_ls = {
           enable = true;
@@ -27,6 +26,7 @@ in {
         kotlin_language_server.enable = true;
         ltex.enable = true;
         lua_ls.enable = true;
+        nextls.enable = true;
         nixd.enable = true;
         pyright = {
           enable = true;
