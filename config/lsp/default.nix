@@ -26,7 +26,6 @@ in {
         kotlin_language_server.enable = true;
         ltex.enable = true;
         lua_ls.enable = true;
-        nextls.enable = true;
         nixd.enable = true;
         pyright = {
           enable = true;

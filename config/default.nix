@@ -11,6 +11,7 @@
     ./lsp/treesitter.nix
     ./lsp/trouble.nix
     ./lsp/lspsaga.nix
+    ./lsp/elixir-tools.nix
     ./utils/auto-pairs.nix
     ./utils/autosave.nix
     ./utils/blankline.nix
