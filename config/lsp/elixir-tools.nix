@@ -25,11 +25,20 @@ in {
     elixir.setup({
       nextls = {
         enable = true,
+        experimental = {
+          completions = {
+            enable = true,
+          },
+        },
       },
       elixirls = {
         enable = true,
-        dialyzerEnabled = false,
-        enableTestLenses = false,
+        settings = {
+          dialyzerEnabled = true,
+          fetchDeps = true,
+          enableTestLenses = false,
+          suggestSpecs = true,
+        },
       },
       projectionist = {
         enable = false,
