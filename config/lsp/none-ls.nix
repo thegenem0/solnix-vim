@@ -13,7 +13,6 @@
         terraform_validate.enable = true;
         tfsec.enable = true;
         todo_comments.enable = true;
-        yamllint.enable = true;
         zsh.enable = true;
       };
       formatting = {

@@ -1,5 +1,15 @@
 { pkgs, lib, ... }:
-let custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
+let
+  custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
+  yaml-schemas = {
+    "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" =
+      "/docker-compose.yml";
+    "https://json.schemastore.org/github-workflow.json" =
+      "/.github/workflows/*";
+    "https://json.schemastore.org/github-action.json" = "/.github/actions/*";
+    "https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/dbt_yml_files-latest.json" =
+      "/dbt_project.yml";
+  };
 in {
   plugins = {
     lsp = {
@@ -16,7 +26,10 @@ in {
           enable = true;
           package = custom-servers.gitlab-ci-ls;
         };
-        gopls.enable = true;
+        gopls = {
+          enable = true;
+          goPackage = pkgs.go;
+        };
         gradle_ls = {
           enable = true;
           package = pkgs.vscode-extensions.vscjava.vscode-gradle;
@@ -50,7 +63,17 @@ in {
         terraformls.enable = true;
         tflint.enable = true;
         ts_ls.enable = true;
-        yamlls.enable = true;
+        yamlls = {
+          enable = true;
+          settings = {
+            yaml = {
+              format.enable = true;
+              validate = true;
+              schemaStore.enable = true;
+              schemas = yaml-schemas;
+            };
+          };
+        };
         zls.enable = true;
       };
     };
