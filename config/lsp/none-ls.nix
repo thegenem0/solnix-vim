@@ -7,7 +7,7 @@
         dotenv_linter.enable = true;
         golangci_lint.enable = true;
         ktlint.enable = true;
-        markdownlint.enable = true;
+        markdownlint = { enable = true; };
         statix.enable = true;
         stylelint.enable = true;
         terraform_validate.enable = true;
