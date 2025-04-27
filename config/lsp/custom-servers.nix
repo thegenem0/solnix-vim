@@ -22,11 +22,8 @@ let
       description = "GitLab CI Language Server";
       homepage = "https://github.com/alesbrelih/gitlab-ci-ls";
       license = licenses.mit;
-      maintainers = [];
+      maintainers = [ ];
     };
   };
 
-in
-{
-  inherit gitlab-ci-ls;
-}
+in { inherit gitlab-ci-ls; }

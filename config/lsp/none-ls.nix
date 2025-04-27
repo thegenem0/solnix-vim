@@ -21,7 +21,10 @@
         ktlint.enable = true;
         markdownlint.enable = true;
         nixfmt.enable = true;
-        prettierd.enable = true;
+        prettierd = {
+          enable = true;
+          disableTsServerFormatter = true;
+        };
         shellharden.enable = true;
         shfmt.enable = true;
         stylelint.enable = true;

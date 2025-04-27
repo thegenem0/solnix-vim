@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
+  # custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
   yaml-schemas = {
     "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" =
       "/docker-compose.yml";
@@ -22,14 +22,11 @@ in {
         docker_compose_language_service.enable = true;
         dockerls.enable = true;
         eslint.enable = true;
-        gitlab_ci_ls = {
-          enable = true;
-          package = custom-servers.gitlab-ci-ls;
-        };
-        gopls = {
-          enable = true;
-          goPackage = pkgs.go;
-        };
+        # gitlab_ci_ls = {
+        #   enable = true;
+        #   package = custom-servers.gitlab-ci-ls;
+        # };
+        gopls = { enable = true; };
         gradle_ls = {
           enable = true;
           package = pkgs.vscode-extensions.vscjava.vscode-gradle;

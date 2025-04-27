@@ -63,17 +63,19 @@
 
     notify = {
       enable = true;
-      backgroundColour = "#000000";
-      render = "minimal";
-      stages = "fade";
-      timeout = 2000;
-      extraOptions = {
-        icons = {
-          ERROR = "";
-          WARN = "";
-          INFO = "";
-          DEBUG = "";
-          TRACE = "✎";
+      settings = {
+        background_colour = "#000000";
+        render = "minimal";
+        stages = "fade";
+        timeout = 2000;
+        extraOptions = {
+          icons = {
+            ERROR = "";
+            WARN = "";
+            INFO = "";
+            DEBUG = "";
+            TRACE = "✎";
+          };
         };
       };
     };

@@ -6,12 +6,12 @@
     ./misc.nix
     ./lsp/default.nix
     ./lsp/fidget.nix
-    ./lsp/cmp.nix
+    # ./lsp/cmp.nix
     ./lsp/none-ls.nix
     ./lsp/treesitter.nix
     ./lsp/trouble.nix
     ./lsp/lspsaga.nix
-    ./lsp/elixir-tools.nix
+    # ./lsp/elixir-tools.nix
     ./utils/auto-pairs.nix
     ./utils/autosave.nix
     ./utils/blankline.nix
@@ -25,6 +25,7 @@
     ./utils/transparent.nix
     ./utils/direnv.nix
     ./utils/supermaven.nix
+    ./utils/blink.nix
   ];
 
   colorschemes.catppuccin = {
