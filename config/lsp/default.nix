@@ -16,7 +16,7 @@ in {
       enable = true;
       servers = {
         bashls.enable = true;
-        clangd.nable = true;
+        clangd.enable = true;
         cmake.enable = true;
         cssls.enable = true;
         docker_compose_language_service.enable = true;
