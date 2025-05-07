@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  # custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
+  custom-servers = import ./custom-servers.nix { inherit pkgs lib; };
   yaml-schemas = {
     "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" =
       "/docker-compose.yml";
@@ -16,7 +16,7 @@ in {
       enable = true;
       servers = {
         bashls.enable = true;
-        clangd.enable = true;
+        clangd.nable = true;
         cmake.enable = true;
         cssls.enable = true;
         docker_compose_language_service.enable = true;
@@ -36,6 +36,10 @@ in {
         kotlin_language_server.enable = true;
         lua_ls.enable = true;
         nixd.enable = true;
+        protols = {
+          enable = true;
+          package = custom-servers.protols;
+        };
         pyright = {
           enable = true;
           settings = {
