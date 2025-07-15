@@ -7,7 +7,10 @@
         dotenv_linter.enable = true;
         golangci_lint.enable = true;
         ktlint.enable = true;
-        markdownlint = { enable = true; };
+        markdownlint = {
+          enable = true;
+          settings = { args = [ "--disable MD015" ]; };
+        };
         statix.enable = true;
         stylelint.enable = true;
         terraform_validate.enable = true;
